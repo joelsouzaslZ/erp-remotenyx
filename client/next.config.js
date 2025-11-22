@@ -34,8 +34,8 @@ const nextConfig = {
     } : false,
   },
   
-  // Output configuration for Docker
-  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
+  // Output configuration
+  output: undefined,
   
   // Headers for security
   async headers() {

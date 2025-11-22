@@ -33,51 +33,10 @@ Um sistema ERP moderno e completo com instalação automática de PostgreSQL, in
 
 ### Pré-requisitos
 - 💻 Windows 10+ / macOS / Linux  
-- 🟢 Node.js 18+ ([Download](https://nodejs.org/)) OU Docker
+- 🟢 Node.js 18+ ([Download](https://nodejs.org/))
 - 🌐 Conexão com internet (apenas primeira execução)
 
-### 🐳 **Opção 1: Docker (Recomendado)**
-
-#### Pré-requisitos Docker
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [Docker Compose](https://docs.docker.com/compose/install/) (incluído no Docker Desktop)
-
-#### Setup Rápido com Docker
-```bash
-# Clone o repositório
-git clone https://github.com/remotenyx/erp-remotenyx.git
-cd erp-remotenyx
-
-# Setup inicial
-./docker-manager.sh setup  # Linux/macOS
-# OU
-docker-manager.bat setup   # Windows
-
-# Iniciar ambiente de desenvolvimento
-./docker-manager.sh dev    # Linux/macOS  
-# OU
-docker-manager.bat dev     # Windows
-```
-
-#### Comandos Docker Disponíveis
-```bash
-# Desenvolvimento
-./docker-manager.sh dev     # Iniciar ambiente dev
-./docker-manager.sh logs    # Ver logs
-./docker-manager.sh status  # Status dos containers
-
-# Produção
-./docker-manager.sh prod    # Iniciar ambiente produção
-./docker-manager.sh stop    # Parar containers
-./docker-manager.sh restart # Reiniciar
-
-# Manutenção
-./docker-manager.sh backup  # Backup do banco
-./docker-manager.sh restore # Restaurar backup
-./docker-manager.sh clean   # Limpeza completa
-```
-
-### 💻 **Opção 2: Instalação Tradicional**
+### 💻 **Instalação Tradicional**
 
 #### Método 1: Um Clique (Windows)
 ```bash
@@ -102,101 +61,13 @@ npm run dev
 ```
 
 ### 🌐 Acessar o Sistema
-
-#### Docker
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000
-- **pgAdmin**: http://localhost:5050
-- **Mailhog** (dev): http://localhost:8025
-
-#### Instalação Tradicional
-- **URL**: http://localhost:3000
+- **PostgreSQL**: localhost:5433
 - **Email**: admin@remotenyx.com
 - **Senha**: admin123
 
-## 🐳 Docker - Guia Completo
 
-### Estrutura dos Containers
-
-```
-┌─ Frontend (Next.js)     :3000
-├─ Backend (Node.js)      :5000  
-├─ PostgreSQL             :5433
-├─ Redis (Cache)          :6379
-├─ pgAdmin (DB Admin)     :5050
-├─ Mailhog (Email Test)   :8025
-└─ NGINX (Production)     :80
-```
-
-### Ambientes Disponíveis
-
-#### 🛠️ Desenvolvimento (`docker-compose.dev.yml`)
-- Hot reload ativo
-- Debug habilitado
-- pgAdmin e Mailhog inclusos
-- Volumes mapeados para desenvolvimento
-
-#### 🚀 Produção (`docker-compose.yml`)
-- Build otimizado
-- NGINX como reverse proxy
-- SSL ready (configurável)
-- Health checks ativos
-
-### Comandos Úteis
-
-```bash
-# Ver status dos containers
-docker-compose ps
-
-# Logs específicos
-docker-compose logs frontend
-docker-compose logs backend
-docker-compose logs postgres
-
-# Entrar em um container
-docker exec -it erp-frontend sh
-docker exec -it erp-backend sh
-docker exec -it erp-postgres psql -U erp_admin erp_remotenyx
-
-# Rebuild específico
-docker-compose build frontend
-docker-compose build backend
-
-# Variáveis de ambiente
-cp .env.example .env
-# Edit .env com suas configurações
-```
-
-### Troubleshooting Docker
-
-#### Containers não iniciam
-```bash
-# Verificar logs
-docker-compose logs
-
-# Limpar tudo e recomeçar
-docker-compose down -v
-docker system prune -f
-docker-compose up --build
-```
-
-#### Banco de dados não conecta
-```bash
-# Verificar se PostgreSQL está rodando
-docker-compose ps postgres
-
-# Resetar dados do banco
-docker-compose down -v
-docker volume rm erp_postgres_data
-docker-compose up postgres
-```
-
-#### Frontend não carrega
-```bash
-# Verificar se as dependências estão atualizadas
-docker-compose build frontend --no-cache
-docker-compose up frontend
-```
 
 ## 🤖 GitHub Copilot Integration
 
