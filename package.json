@@ -8,7 +8,7 @@
     "postinstall": "npm run install-all",
     "install-all": "cd server && npm install && cd ../client && npm install",
     "setup": "node auto-setup.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "node start.js",
     "server": "cd server && node index.js",
     "client": "cd client && npm run dev",
     "build": "cd client && npm run build",
