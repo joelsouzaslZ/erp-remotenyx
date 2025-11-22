@@ -38,21 +38,26 @@ function startSystem() {
   });
 
   let clientProcess = null;
+  let cleanupRegistered = false;
 
   // Handle cleanup
   const cleanup = () => {
-    console.log('\n\n🛑 Shutting down...');
-    serverProcess.kill();
-    if (clientProcess) {
-      clientProcess.kill();
+    if (!cleanupRegistered) {
+      cleanupRegistered = true;
+      console.log('\n\n🛑 Shutting down...');
+      serverProcess.kill();
+      if (clientProcess) {
+        clientProcess.kill();
+      }
+      process.exit(0);
     }
-    process.exit(0);
   };
 
   process.on('SIGINT', cleanup);
   process.on('SIGTERM', cleanup);
 
-  // Give server time to start
+  // Wait for server to be ready before starting client
+  const SERVER_STARTUP_DELAY = process.env.SERVER_STARTUP_DELAY || 3000;
   setTimeout(() => {
     console.log('\n🔄 Starting frontend client...');
     clientProcess = spawn('npm', ['run', 'client'], {
@@ -60,7 +65,7 @@ function startSystem() {
       stdio: 'inherit',
       shell: true
     });
-  }, 3000);
+  }, parseInt(SERVER_STARTUP_DELAY));
 
   serverProcess.on('error', (err) => {
     console.error('❌ Error starting server:', err.message);
@@ -68,7 +73,7 @@ function startSystem() {
   });
 
   serverProcess.on('exit', (code) => {
-    if (code !== 0) {
+    if (code !== 0 && !cleanupRegistered) {
       console.error('❌ Server exited with code:', code);
       process.exit(code);
     }

@@ -92,10 +92,10 @@ class User {
     } catch (error) {
       console.error('Erro ao criar usuário:', error);
       // Fallback para mock data
-      if (global.mockData && global.mockData.users) {
+      if (global.mockData) {
         const hashedPassword = await bcrypt.hash(data.password, 10);
         const newUser = {
-          id: Date.now(),
+          id: global.mockData.users.length + 1, // Sequential ID based on array length
           name: data.name,
           email: data.email,
           password: hashedPassword,
