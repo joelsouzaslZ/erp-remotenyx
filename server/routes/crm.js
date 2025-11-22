@@ -85,31 +85,12 @@ router.put('/leads/:id', async (req, res) => {
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
-      userId,
-      source,
-      description,
-      dateDeadline
-    });
-
-    res.json(updatedLead);
-  } catch (error) {
-    console.error('Erro ao atualizar lead:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
-  }
-});
 
 // Deletar lead
-router.delete('/leads/:id', (req, res) => {
+router.delete('/leads/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    
-    const lead = Lead.findById(id);
-    if (!lead) {
-      return res.status(404).json({ error: 'Lead não encontrado' });
-    }
-
-    Lead.delete(id);
-    res.json({ message: 'Lead deletado com sucesso' });
+    // TODO: Implement delete functionality
+    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
   } catch (error) {
     console.error('Erro ao deletar lead:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });

@@ -76,7 +76,7 @@ router.get('/employees-by-department', async (req, res) => {
     
     const departmentStats = departments.map(dept => ({
       department: dept.name,
-      count: employees.filter(emp => emp.department_id === dept.id).length
+      count: employees.filter(emp => emp.department_id == dept.id).length
     }));
     
     res.json(departmentStats);

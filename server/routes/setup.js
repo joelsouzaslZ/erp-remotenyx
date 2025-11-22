@@ -122,7 +122,12 @@ router.post('/initialize', [
 
       // Criar banco se não existir
       if (dbCheck.rows.length === 0) {
-        await client.query(`CREATE DATABASE ${dbName}`);
+        // Sanitize database name to prevent SQL injection
+        const sanitizedDbName = dbName.replace(/[^a-zA-Z0-9_]/g, '');
+        if (sanitizedDbName !== dbName) {
+          throw new Error('Nome do banco de dados contém caracteres inválidos');
+        }
+        await client.query(`CREATE DATABASE ${sanitizedDbName}`);
       }
 
       client.release();
