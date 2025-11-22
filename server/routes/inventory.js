@@ -57,11 +57,11 @@ router.delete('/products/:id', async (req, res) => {
 });
 
 // Buscar produtos com baixo estoque
-router.get('/products/low-stock', (req, res) => {
+router.get('/products/low-stock', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
     
-    const allProducts = Product.findAll();
+    const allProducts = await Product.findAll();
     const lowStockProducts = allProducts.filter(product => product.quantity < 10);
     
     res.json(lowStockProducts.slice(0, parseInt(limit)));

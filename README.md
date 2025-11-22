@@ -31,61 +31,91 @@ Um sistema ERP moderno e completo com assistente de configuração inicial estil
 
 ## 🚀 Início Rápido
 
+### ⚡ Início Super Rápido (3 comandos)
+
+```bash
+git clone https://github.com/joelsouzaslZ/erp-remotenyx.git
+cd erp-remotenyx
+npm run dev
+```
+
+Isso é tudo! O sistema irá:
+1. ✅ Instalar todas as dependências automaticamente
+2. ✅ Criar arquivo de configuração
+3. ✅ Iniciar frontend e backend
+4. ✅ Abrir no navegador em http://localhost:3000
+
 ### Pré-requisitos
 - 💻 Windows 10+ / macOS / Linux  
 - 🟢 Node.js 18+ ([Download](https://nodejs.org/))
 - 🐘 PostgreSQL 14+ instalado e rodando
 - 🌐 Conexão com internet (primeira execução)
 
-### 💻 **Instalação**
+### 💻 **Instalação Detalhada**
 
-#### Método 1: Um Clique (Windows)
+#### 1. Clone o repositório
 ```bash
-# Duplo clique no arquivo:
-INICIAR_COMPLETO.bat
-```
-
-#### Método 2: Linha de Comando
-```bash
-# Clone o repositório
 git clone https://github.com/joelsouzaslZ/erp-remotenyx.git
 cd erp-remotenyx
+```
 
-# Instalar dependências
-npm run install-all
+#### 2. Execute o setup automático (opcional)
+```bash
+npm run setup
+```
 
-# Iniciar sistema
+Este comando irá:
+- ✅ Verificar as dependências do Node.js
+- ✅ Criar arquivo de configuração (.env)
+- ✅ Instalar todas as dependências automaticamente
+- ✅ Preparar o sistema para primeiro uso
+
+#### 3. Inicie o sistema
+```bash
 npm run dev
 ```
 
+Pronto! O sistema estará rodando em:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000
+
 ### 🎯 **Primeira Configuração (Estilo Odoo)**
 
-1. **Acesse o sistema**: http://localhost:3000
-2. **Você será redirecionado para o assistente de configuração**
-3. **Passo 1 - Configure o Banco de Dados:**
-   - Nome do banco: `erp_remotenyx` (ou outro de sua preferência)
-   - Host: `localhost`
-   - Porta: `5433` (ou porta do seu PostgreSQL)
-   - Usuário: `erp_admin` (será criado automaticamente)
-   - Senha: (defina uma senha segura ou deixe em branco)
+Na **primeira execução**, você será automaticamente redirecionado para o assistente de configuração:
 
-4. **Passo 2 - Crie o Administrador:**
-   - Nome da empresa
-   - Nome do administrador
-   - Email de acesso
-   - Senha (mínimo 6 caracteres)
+#### 📋 **Passo 1 - Configure o Banco de Dados** (2 minutos)
+Configure a conexão com seu PostgreSQL:
+- **Nome do banco**: `erp_remotenyx` (será criado automaticamente se não existir)
+- **Host**: `localhost`
+- **Porta**: `5432` (porta padrão do PostgreSQL)
+- **Usuário**: seu usuário PostgreSQL (geralmente `postgres`)
+- **Senha**: senha do seu PostgreSQL
 
-5. **Pronto!** O sistema criará automaticamente:
-   - Banco de dados (se não existir)
-   - Todas as tabelas necessárias
-   - Usuário administrador
-   - Dados de exemplo
-   - Arquivo de configuração (.env)
+💡 **Dica**: Se você não tiver PostgreSQL configurado, o sistema funcionará com dados de exemplo (mock) automaticamente!
+
+#### 👤 **Passo 2 - Crie o Administrador** (1 minuto)
+Defina as credenciais do primeiro usuário:
+- 🏢 Nome da empresa
+- 👤 Nome do administrador
+- 📧 Email de acesso
+- 🔒 Senha (mínimo 6 caracteres)
+
+#### ✨ **O que acontece automaticamente?**
+Após completar o assistente, o sistema irá:
+- ✅ Criar banco de dados (se não existir)
+- ✅ Criar todas as tabelas necessárias
+- ✅ Criar usuário administrador com sua senha
+- ✅ Inserir dados de exemplo (departamentos, produtos)
+- ✅ Gerar arquivo de configuração (.env)
+- ✅ Configurar chaves de segurança (JWT)
+
+🎉 **Pronto!** Você será redirecionado para a tela de login e poderá começar a usar o sistema imediatamente!
 
 ### 🌐 URLs de Acesso
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000
 - **Assistente de Setup**: http://localhost:3000/setup (primeira vez)
+- **API Health Check**: http://localhost:5000/api/health
 
 ### 🔐 Login
 Use as credenciais que você definiu no assistente de configuração.
@@ -121,21 +151,26 @@ erp-remotenyx/
 ## 🛠️ Comandos Disponíveis
 
 ```bash
-# Desenvolvimento
-npm run dev              # Iniciar sistema completo
-npm run setup           # Configurar PostgreSQL automaticamente
-npm run client          # Apenas frontend
-npm run server          # Apenas backend
+# Instalação e Setup
+npm run setup           # Configurar sistema (primeira vez)
+npm install            # Instalar dependências (automático após setup)
 
-# GitHub Copilot Commands
-npm run copilot:test     # Gerar testes com Copilot
-npm run copilot:docs     # Gerar documentação
-npm run copilot:optimize # Otimizar código
+# Desenvolvimento
+npm run dev            # Iniciar sistema completo (frontend + backend)
+npm run server         # Apenas backend (porta 5000)
+npm run client         # Apenas frontend (porta 3000)
+
+# Produção
+npm run build          # Build do frontend para produção
+npm run start          # Iniciar servidor em produção
+npm start:prod         # Iniciar com NODE_ENV=production
+
+# Testes
+npm test               # Executar testes
 
 # Manutenção
-npm run install-all     # Instalar todas as dependências
-npm run clean          # Limpar arquivos temporários
-npm run reset          # Reset completo do sistema
+npm run clean          # Limpar node_modules
+npm run reset          # Reset completo (limpar + reinstalar)
 ```
 
 ## 📚 API Documentation
@@ -249,25 +284,56 @@ COPILOT_MODEL=gpt-4
 
 ## 🐛 Troubleshooting
 
-### PostgreSQL Issues
+### PostgreSQL não está rodando
 ```bash
-# Reset PostgreSQL
-npm run reset-db
+# Linux/Ubuntu
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
 
-# Check logs
-cat postgresql/logs/postgresql.log
+# macOS (com Homebrew)
+brew services start postgresql
 
-# Manual setup
-npm run setup-db
+# Windows
+# Usar o PostgreSQL Service Manager ou iniciar manualmente
 ```
 
-### Copilot Issues
+### Erro de conexão com o banco de dados
 ```bash
-# Restart Copilot service
-Ctrl+Shift+P -> "GitHub Copilot: Reload"
+# Verificar se PostgreSQL está rodando
+pg_isready
 
-# Check Copilot status
-gh copilot status
+# Verificar credenciais no arquivo .env
+# Certifique-se de que DB_USER e DB_PASSWORD estão corretos
+```
+
+### Porta 3000 ou 5000 já em uso
+```bash
+# Linux/macOS - Encontrar e matar processo
+lsof -ti:3000 | xargs kill -9
+lsof -ti:5000 | xargs kill -9
+
+# Windows
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+```
+
+### Dependências não instaladas
+```bash
+# Limpar e reinstalar tudo
+npm run clean
+npm install
+```
+
+### Sistema não redireciona para o setup
+```bash
+# Verificar se .env existe
+ls -la .env
+
+# Se existir, remova para forçar o setup
+rm .env
+
+# Reinicie o sistema
+npm run dev
 ```
 
 ## 📄 Licença

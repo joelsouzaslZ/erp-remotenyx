@@ -9,10 +9,10 @@ console.log('🔧 Carregando .env de:', envPath);
 
 // Configuração de conexão com PostgreSQL
 const dbConfig = {
-  user: process.env.DB_USER || 'erp_admin',
+  user: process.env.DB_USER || 'postgres',
   host: process.env.DB_HOST || 'localhost', 
   database: process.env.DB_NAME || 'erp_remotenyx',
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5433,
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
 };
 
 // Debug das variáveis de ambiente
@@ -23,15 +23,15 @@ console.log('  DB_USER:', process.env.DB_USER);
 console.log('  DB_NAME:', process.env.DB_NAME);
 console.log('  NODE_ENV:', process.env.NODE_ENV);
 
-// Para ambiente de desenvolvimento local com trust, não precisamos de senha
-if (process.env.NODE_ENV !== 'production') {
-  console.log('🔧 Usando configuração de desenvolvimento (sem senha)');
-  console.log('📊 Config DB final:', JSON.stringify(dbConfig, null, 2));
+// Adicionar senha se fornecida
+if (process.env.DB_PASSWORD && process.env.DB_PASSWORD.trim() !== '') {
+  dbConfig.password = process.env.DB_PASSWORD;
+  console.log('🔒 Usando autenticação com senha');
 } else {
-  // Em produção, usar senha
-  dbConfig.password = process.env.DB_PASSWORD || 'erp_admin_2025';
-  console.log('🔒 Usando configuração de produção (com senha)');
+  console.log('🔓 Usando autenticação sem senha (trust/peer)');
 }
+
+console.log('📊 Config DB final:', JSON.stringify(dbConfig, null, 2));
 
 const pool = new Pool(dbConfig);
 
