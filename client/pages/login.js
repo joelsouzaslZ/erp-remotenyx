@@ -13,6 +13,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [registrationAllowed, setRegistrationAllowed] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   
   const { login, user } = useAuth();
   const router = useRouter();
@@ -23,6 +24,11 @@ export default function Login() {
       router.push('/dashboard');
     }
     checkRegistrationAllowed();
+    
+    // Verificar se vem do setup
+    if (router.query.setup === 'success') {
+      setSuccessMessage('Sistema configurado com sucesso! Faça login para continuar.');
+    }
   }, [user, router]);
 
   const checkRegistrationAllowed = async () => {
@@ -134,6 +140,18 @@ export default function Login() {
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-red-800">
                     {error}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="rounded-md bg-green-50 p-4">
+              <div className="flex">
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-green-800">
+                    {successMessage}
                   </h3>
                 </div>
               </div>

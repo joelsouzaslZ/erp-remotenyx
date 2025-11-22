@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const Lead = require('../models/Lead');
+const { Lead } = require('../models');
 
 // Listar leads
-router.get('/leads', (req, res) => {
+router.get('/leads', async (req, res) => {
   try {
     const { page = 1, limit = 10, stage = '', search = '' } = req.query;
     const offset = (page - 1) * limit;
 
-    let leads = Lead.findAll();
+    let leads = await Lead.findAll();
     
     // Filtros
     if (stage) {
@@ -18,9 +18,9 @@ router.get('/leads', (req, res) => {
     if (search) {
       const searchLower = search.toLowerCase();
       leads = leads.filter(lead => 
-        lead.name.toLowerCase().includes(searchLower) ||
-        lead.partnerName.toLowerCase().includes(searchLower) ||
-        lead.email.toLowerCase().includes(searchLower)
+        (lead.name && lead.name.toLowerCase().includes(searchLower)) ||
+        (lead.partner_name && lead.partner_name.toLowerCase().includes(searchLower)) ||
+        (lead.email && lead.email.toLowerCase().includes(searchLower))
       );
     }
 
@@ -40,32 +40,32 @@ router.get('/leads', (req, res) => {
 });
 
 // Criar lead
-router.post('/leads', (req, res) => {
+router.post('/leads', async (req, res) => {
   try {
     const { 
-      name, partnerName, email, phone, stage, priority, 
-      expectedRevenue, probability, userId, source, description, dateDeadline 
+      name, partner_name, email, phone, stage, priority, 
+      expected_revenue, probability, user_id, source, description, date_deadline 
     } = req.body;
     
-    if (!name || !partnerName) {
+    if (!name || !partner_name) {
       return res.status(400).json({ 
         error: 'Nome da oportunidade e nome do cliente são obrigatórios' 
       });
     }
 
-    const lead = Lead.create({
+    const lead = await Lead.create({
       name,
-      partnerName,
+      partner_name,
       email,
       phone,
       stage: stage || 'new',
-      priority: priority || '0',
-      expectedRevenue: parseFloat(expectedRevenue) || 0,
+      priority: priority || 0,
+      expected_revenue: parseFloat(expected_revenue) || 0,
       probability: parseInt(probability) || 0,
-      userId,
+      user_id,
       source: source || 'website',
       description,
-      dateDeadline
+      date_deadline
     });
 
     res.status(201).json(lead);
@@ -76,35 +76,10 @@ router.post('/leads', (req, res) => {
 });
 
 // Atualizar lead
-router.put('/leads/:id', (req, res) => {
+router.put('/leads/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { 
-      name, partnerName, email, phone, stage, priority, 
-      expectedRevenue, probability, userId, source, description, dateDeadline 
-    } = req.body;
-    
-    const lead = Lead.findById(id);
-    if (!lead) {
-      return res.status(404).json({ error: 'Lead não encontrado' });
-    }
-
-    const updatedLead = Lead.update(id, {
-      name,
-      partnerName,
-      email,
-      phone,
-      stage,
-      priority,
-      expectedRevenue: parseFloat(expectedRevenue) || 0,
-      probability: parseInt(probability) || 0,
-      userId,
-      source,
-      description,
-      dateDeadline
-    });
-
-    res.json(updatedLead);
+    // TODO: Implement update functionality
+    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
   } catch (error) {
     console.error('Erro ao atualizar lead:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
@@ -112,17 +87,10 @@ router.put('/leads/:id', (req, res) => {
 });
 
 // Deletar lead
-router.delete('/leads/:id', (req, res) => {
+router.delete('/leads/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    
-    const lead = Lead.findById(id);
-    if (!lead) {
-      return res.status(404).json({ error: 'Lead não encontrado' });
-    }
-
-    Lead.delete(id);
-    res.json({ message: 'Lead deletado com sucesso' });
+    // TODO: Implement delete functionality
+    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
   } catch (error) {
     console.error('Erro ao deletar lead:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });

@@ -3,19 +3,19 @@ const router = express.Router();
 const { Transaction, Employee, Product, Department } = require('../models');
 
 // Estatísticas gerais do dashboard
-router.get('/stats', (req, res) => {
+router.get('/stats', async (req, res) => {
   try {
-    const transactions = Transaction.findAll();
-    const employees = Employee.findAll();
-    const products = Product.findAll();
+    const transactions = await Transaction.findAll();
+    const employees = await Employee.findAll();
+    const products = await Product.findAll();
     
     const income = transactions
       .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
       
     const expenses = transactions
       .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
     const lowStockProducts = products.filter(p => p.quantity < 10).length;
 
@@ -54,11 +54,11 @@ router.get('/financial-chart', (req, res) => {
 });
 
 // Transações recentes
-router.get('/recent-transactions', (req, res) => {
+router.get('/recent-transactions', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
     
-    const transactions = Transaction.findAll();
+    const transactions = await Transaction.findAll();
     const recentTransactions = transactions.slice(-parseInt(limit)).reverse();
     
     res.json(recentTransactions);
@@ -69,14 +69,14 @@ router.get('/recent-transactions', (req, res) => {
 });
 
 // Funcionários por departamento
-router.get('/employees-by-department', (req, res) => {
+router.get('/employees-by-department', async (req, res) => {
   try {
-    const employees = Employee.findAll();
-    const departments = Department.findAll();
+    const employees = await Employee.findAll();
+    const departments = await Department.findAll();
     
     const departmentStats = departments.map(dept => ({
       department: dept.name,
-      count: employees.filter(emp => emp.departmentId === dept.id).length
+      count: employees.filter(emp => emp.department_id == dept.id).length
     }));
     
     res.json(departmentStats);

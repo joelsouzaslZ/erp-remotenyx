@@ -3,12 +3,12 @@ const router = express.Router();
 const { Transaction } = require('../models');
 
 // Listar transações
-router.get('/transactions', (req, res) => {
+router.get('/transactions', async (req, res) => {
   try {
     const { page = 1, limit = 10, type = '', category = '', search = '' } = req.query;
     const offset = (page - 1) * limit;
 
-    let transactions = Transaction.findAll();
+    let transactions = await Transaction.findAll();
     
     // Filtros
     if (type) {
@@ -29,11 +29,11 @@ router.get('/transactions', (req, res) => {
     // Calcular totais
     const totalIncome = transactions
       .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
       
     const totalExpense = transactions
       .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
     const count = transactions.length;
     const rows = transactions.slice(offset, offset + parseInt(limit));
@@ -56,7 +56,7 @@ router.get('/transactions', (req, res) => {
 });
 
 // Criar transação
-router.post('/transactions', (req, res) => {
+router.post('/transactions', async (req, res) => {
   try {
     const { type, category, description, amount, date } = req.body;
     
@@ -66,7 +66,7 @@ router.post('/transactions', (req, res) => {
       });
     }
 
-    const transaction = Transaction.create({
+    const transaction = await Transaction.create({
       type,
       category,
       description,
