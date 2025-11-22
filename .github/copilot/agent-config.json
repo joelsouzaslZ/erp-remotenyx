@@ -1,0 +1,160 @@
+{
+  "name": "erp-remotenyx-agent",
+  "version": "1.0.0",
+  "description": "Specialized GitHub Copilot agent for ERP Remotenyx development",
+  "capabilities": [
+    "code-generation",
+    "bug-fixing",
+    "testing",
+    "documentation",
+    "refactoring",
+    "database-optimization",
+    "api-development",
+    "ui-components"
+  ],
+  "context": {
+    "project_type": "enterprise_resource_planning",
+    "architecture": "full_stack_web_application",
+    "tech_stack": {
+      "frontend": {
+        "framework": "Next.js",
+        "version": "14.0.3",
+        "styling": "Tailwind CSS",
+        "state_management": "React Context",
+        "http_client": "Axios"
+      },
+      "backend": {
+        "runtime": "Node.js",
+        "framework": "Express.js",
+        "authentication": "JWT + bcrypt",
+        "middleware": ["cors", "helmet", "rate-limit"]
+      },
+      "database": {
+        "primary": "PostgreSQL",
+        "version": "14+",
+        "orm": "Custom Models",
+        "migration": "SQL Scripts",
+        "compatibility": "Odoo-inspired schema"
+      },
+      "deployment": {
+        "containerization": "Docker",
+        "platforms": ["Heroku", "Vercel", "Railway"],
+        "ci_cd": "GitHub Actions"
+      }
+    },
+    "business_modules": [
+      "dashboard",
+      "crm",
+      "human_resources",
+      "financial_management",
+      "inventory_management",
+      "reporting"
+    ],
+    "coding_patterns": {
+      "api_structure": "RESTful endpoints with proper HTTP methods",
+      "error_handling": "Try-catch blocks with graceful fallbacks",
+      "authentication": "JWT token-based with refresh tokens",
+      "data_models": "PostgreSQL-first with mock fallbacks",
+      "component_structure": "Functional components with hooks",
+      "state_management": "Context API with reducers"
+    },
+    "database_schema": {
+      "users": ["id", "email", "password_hash", "role", "created_at"],
+      "employees": ["id", "name", "email", "department_id", "position", "salary", "hire_date"],
+      "departments": ["id", "name", "description", "manager_id"],
+      "products": ["id", "name", "description", "price", "quantity", "category"],
+      "transactions": ["id", "type", "amount", "description", "category", "date"],
+      "leads": ["id", "name", "email", "phone", "status", "source", "created_at"]
+    },
+    "file_structure": {
+      "client/": "Next.js frontend application",
+      "server/": "Node.js backend API",
+      "postgresql/": "Auto-managed PostgreSQL installation",
+      ".github/": "CI/CD and Copilot configurations",
+      "docs/": "Project documentation"
+    }
+  },
+  "prompts": {
+    "code_generation": "Generate code following ERP Remotenyx patterns with proper error handling, PostgreSQL integration, and Tailwind styling",
+    "bug_fixing": "Analyze ERP-specific issues focusing on database connections, JWT authentication, and API responses",
+    "testing": "Create comprehensive tests for ERP modules including unit tests for models, integration tests for APIs, and component tests",
+    "documentation": "Generate documentation following ERP business context with examples for CRM, HR, Finance, and Inventory modules",
+    "refactoring": "Optimize code for performance, maintainability, and ERP-specific requirements like data consistency and user permissions",
+    "database": "Generate PostgreSQL queries optimized for ERP operations with proper indexing and relationship handling"
+  },
+  "custom_commands": {
+    "/generate-module": "Create a new ERP module with all necessary files (model, controller, routes, frontend components)",
+    "/optimize-query": "Optimize PostgreSQL queries for better performance",
+    "/create-test-suite": "Generate comprehensive test suite for specified module",
+    "/generate-api-docs": "Create OpenAPI documentation for API endpoints",
+    "/refactor-component": "Refactor React component with best practices",
+    "/create-migration": "Generate database migration script",
+    "/validate-schema": "Validate database schema consistency",
+    "/generate-types": "Create TypeScript type definitions"
+  },
+  "conventions": {
+    "naming": {
+      "files": "kebab-case for components, camelCase for utilities",
+      "variables": "camelCase",
+      "constants": "UPPER_SNAKE_CASE",
+      "database": "snake_case for tables and columns",
+      "api_endpoints": "kebab-case with plural nouns"
+    },
+    "structure": {
+      "components": "One component per file with default export",
+      "api_routes": "RESTful structure with proper HTTP methods",
+      "models": "Class-based with static methods for queries",
+      "utilities": "Pure functions with clear inputs/outputs"
+    }
+  },
+  "examples": {
+    "react_component": {
+      "file": "client/components/EmployeeCard.js",
+      "pattern": "Functional component with hooks, Tailwind classes, proper props validation"
+    },
+    "api_endpoint": {
+      "file": "server/routes/employees.js",
+      "pattern": "Express router with validation, authentication middleware, error handling"
+    },
+    "database_model": {
+      "file": "server/models/Employee.js",
+      "pattern": "Class with static methods, PostgreSQL queries, mock fallbacks"
+    },
+    "configuration": {
+      "file": "server/config/database.js",
+      "pattern": "Environment-based config with validation and fallbacks"
+    }
+  },
+  "quality_gates": {
+    "code_review": [
+      "Proper error handling implemented",
+      "Database queries optimized",
+      "Authentication/authorization checked",
+      "Input validation present",
+      "Responsive design maintained",
+      "Performance considerations addressed"
+    ],
+    "testing": [
+      "Unit tests for business logic",
+      "Integration tests for API endpoints",
+      "Component tests for React components",
+      "Database migration tests",
+      "Authentication flow tests"
+    ]
+  },
+  "integrations": {
+    "vscode_extensions": [
+      "GitHub Copilot",
+      "GitHub Copilot Chat",
+      "PostgreSQL Explorer",
+      "Tailwind CSS IntelliSense",
+      "ES7+ React/Redux/React-Native snippets"
+    ],
+    "github_features": [
+      "Actions for CI/CD",
+      "Codespaces for development",
+      "Issues for feature tracking",
+      "Projects for milestone planning"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "erp-remotenyx",
+  "version": "2.0.0",
+  "description": "Sistema ERP completo com PostgreSQL automático, controle financeiro, RH, estoque e dashboard",
+  "main": "server/index.js",
+  "scripts": {
+    "setup": "node auto-setup.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && \"C:\\Program Files\\nodejs\\node.exe\" index.js",
+    "client": "cd client && \"C:\\Program Files\\nodejs\\npm.cmd\" run dev",
+    "build": "cd client && npm run build",
+    "start": "cd server && \"C:\\Program Files\\nodejs\\node.exe\" index.js",
+    "install-all": "\"C:\\Program Files\\nodejs\\npm.cmd\" install && cd server && \"C:\\Program Files\\nodejs\\npm.cmd\" install && cd ../client && \"C:\\Program Files\\nodejs\\npm.cmd\" install",
+    "setup-db": "call setup_postgres_portable.bat",
+    "clean": "rmdir /s /q node_modules client\\node_modules server\\node_modules postgresql temp_pg_download 2>nul & echo Limpeza concluida",
+    "reset": "npm run clean && npm run install-all && npm run setup"
+  },
+  "keywords": [
+    "erp",
+    "financeiro",
+    "rh",
+    "estoque",
+    "dashboard",
+    "postgresql",
+    "automatico"
+  ],
+  "author": "Remotenyx",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  }
+}
