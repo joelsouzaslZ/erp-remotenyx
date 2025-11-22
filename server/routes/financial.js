@@ -126,17 +126,17 @@ router.delete('/transactions/:id', (req, res) => {
 });
 
 // Dashboard financeiro
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard', async (req, res) => {
   try {
-    const transactions = Transaction.findAll();
+    const transactions = await Transaction.findAll();
     
     const totalIncome = transactions
       .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
       
     const totalExpense = transactions
       .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
     // Transações por categoria
     const categories = {};
@@ -144,7 +144,7 @@ router.get('/dashboard', (req, res) => {
       if (!categories[t.category]) {
         categories[t.category] = { income: 0, expense: 0 };
       }
-      categories[t.category][t.type] += t.amount;
+      categories[t.category][t.type] += parseFloat(t.amount);
     });
 
     const categoryStats = Object.entries(categories).map(([category, amounts]) => ({

@@ -157,9 +157,9 @@ router.get('/stats/overview', async (req, res) => {
 });
 
 // Listar departamentos
-router.get('/departments/list', (req, res) => {
+router.get('/departments/list', async (req, res) => {
   try {
-    const departments = Department.findAll();
+    const departments = await Department.findAll();
     res.json(departments);
   } catch (error) {
     console.error('Erro ao listar departamentos:', error);
