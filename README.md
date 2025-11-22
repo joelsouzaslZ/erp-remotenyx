@@ -37,37 +37,44 @@ Um sistema ERP moderno e completo com assistente de configuração inicial estil
 - 🐘 PostgreSQL 14+ instalado e rodando
 - 🌐 Conexão com internet (primeira execução)
 
-### 💻 **Instalação**
+### 💻 **Instalação (3 passos simples)**
 
-#### Método 1: Um Clique (Windows)
+#### 1. Clone o repositório
 ```bash
-# Duplo clique no arquivo:
-INICIAR_COMPLETO.bat
-```
-
-#### Método 2: Linha de Comando
-```bash
-# Clone o repositório
 git clone https://github.com/joelsouzaslZ/erp-remotenyx.git
 cd erp-remotenyx
+```
 
-# Instalar dependências
-npm run install-all
+#### 2. Execute o setup automático
+```bash
+npm run setup
+```
 
-# Iniciar sistema
+Este comando irá:
+- ✅ Verificar as dependências do Node.js
+- ✅ Criar arquivo de configuração (.env)
+- ✅ Instalar todas as dependências automaticamente
+- ✅ Preparar o sistema para primeiro uso
+
+#### 3. Inicie o sistema
+```bash
 npm run dev
 ```
+
+Pronto! O sistema estará rodando em:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000
 
 ### 🎯 **Primeira Configuração (Estilo Odoo)**
 
 1. **Acesse o sistema**: http://localhost:3000
-2. **Você será redirecionado para o assistente de configuração**
+2. **Você será redirecionado automaticamente para o assistente de configuração**
 3. **Passo 1 - Configure o Banco de Dados:**
-   - Nome do banco: `erp_remotenyx` (ou outro de sua preferência)
+   - Nome do banco: `erp_remotenyx` (será criado automaticamente)
    - Host: `localhost`
-   - Porta: `5433` (ou porta do seu PostgreSQL)
-   - Usuário: `erp_admin` (será criado automaticamente)
-   - Senha: (defina uma senha segura ou deixe em branco)
+   - Porta: `5432` (porta padrão do PostgreSQL)
+   - Usuário: seu usuário PostgreSQL (geralmente `postgres`)
+   - Senha: senha do seu PostgreSQL
 
 4. **Passo 2 - Crie o Administrador:**
    - Nome da empresa
@@ -76,16 +83,17 @@ npm run dev
    - Senha (mínimo 6 caracteres)
 
 5. **Pronto!** O sistema criará automaticamente:
-   - Banco de dados (se não existir)
-   - Todas as tabelas necessárias
-   - Usuário administrador
-   - Dados de exemplo
-   - Arquivo de configuração (.env)
+   - ✅ Banco de dados (se não existir)
+   - ✅ Todas as tabelas necessárias
+   - ✅ Usuário administrador
+   - ✅ Dados de exemplo (departamentos, produtos)
+   - ✅ Arquivo de configuração (.env)
 
 ### 🌐 URLs de Acesso
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000
 - **Assistente de Setup**: http://localhost:3000/setup (primeira vez)
+- **API Health Check**: http://localhost:5000/api/health
 
 ### 🔐 Login
 Use as credenciais que você definiu no assistente de configuração.
@@ -121,21 +129,26 @@ erp-remotenyx/
 ## 🛠️ Comandos Disponíveis
 
 ```bash
-# Desenvolvimento
-npm run dev              # Iniciar sistema completo
-npm run setup           # Configurar PostgreSQL automaticamente
-npm run client          # Apenas frontend
-npm run server          # Apenas backend
+# Instalação e Setup
+npm run setup           # Configurar sistema (primeira vez)
+npm install            # Instalar dependências (automático após setup)
 
-# GitHub Copilot Commands
-npm run copilot:test     # Gerar testes com Copilot
-npm run copilot:docs     # Gerar documentação
-npm run copilot:optimize # Otimizar código
+# Desenvolvimento
+npm run dev            # Iniciar sistema completo (frontend + backend)
+npm run server         # Apenas backend (porta 5000)
+npm run client         # Apenas frontend (porta 3000)
+
+# Produção
+npm run build          # Build do frontend para produção
+npm run start          # Iniciar servidor em produção
+npm start:prod         # Iniciar com NODE_ENV=production
+
+# Testes
+npm test               # Executar testes
 
 # Manutenção
-npm run install-all     # Instalar todas as dependências
-npm run clean          # Limpar arquivos temporários
-npm run reset          # Reset completo do sistema
+npm run clean          # Limpar node_modules
+npm run reset          # Reset completo (limpar + reinstalar)
 ```
 
 ## 📚 API Documentation
