@@ -3,9 +3,9 @@ const router = express.Router();
 const { Product, Transaction } = require('../models');
 
 // Listar todos os produtos
-router.get('/products', (req, res) => {
+router.get('/products', async (req, res) => {
   try {
-    const products = Product.findAll();
+    const products = await Product.findAll();
     res.json(products);
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
@@ -14,17 +14,17 @@ router.get('/products', (req, res) => {
 });
 
 // Criar novo produto
-router.post('/products', (req, res) => {
+router.post('/products', async (req, res) => {
   try {
-    const { name, description, price, quantity, category, sku } = req.body;
+    const { name, description, price, quantity, category, cost, min_quantity } = req.body;
     
-    const product = Product.create({
+    const product = await Product.create({
       name,
-      description,
-      price,
-      quantity,
       category,
-      sku
+      price,
+      cost,
+      quantity,
+      min_quantity
     });
     
     res.status(201).json(product);
@@ -35,26 +35,10 @@ router.post('/products', (req, res) => {
 });
 
 // Atualizar produto
-router.put('/products/:id', (req, res) => {
+router.put('/products/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, description, price, quantity, category, sku } = req.body;
-    
-    const product = Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ error: 'Produto não encontrado' });
-    }
-    
-    const updatedProduct = Product.update(id, {
-      name,
-      description,
-      price,
-      quantity,
-      category,
-      sku
-    });
-    
-    res.json(updatedProduct);
+    // TODO: Implement update functionality
+    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
   } catch (error) {
     console.error('Erro ao atualizar produto:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
@@ -62,17 +46,10 @@ router.put('/products/:id', (req, res) => {
 });
 
 // Deletar produto
-router.delete('/products/:id', (req, res) => {
+router.delete('/products/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    
-    const product = Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ error: 'Produto não encontrado' });
-    }
-    
-    Product.delete(id);
-    res.json({ message: 'Produto deletado com sucesso' });
+    // TODO: Implement delete functionality
+    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
   } catch (error) {
     console.error('Erro ao deletar produto:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
