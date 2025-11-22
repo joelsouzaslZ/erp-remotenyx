@@ -4,17 +4,17 @@
 [![Next.js](https://img.shields.io/badge/Next.js-14.0.3-blue.svg)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue.svg)](https://postgresql.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-Ready-purple.svg)](https://copilot.github.com/)
 
-Um sistema ERP moderno e completo com instalação automática de PostgreSQL, inspirado nas melhores práticas do Odoo.
+Um sistema ERP moderno e completo com assistente de configuração inicial estilo Odoo, interface intuitiva e módulos empresariais integrados.
 
 ## 🚀 Características Principais
 
-### ✨ **Instalação Automática**
-- 🔧 PostgreSQL portátil auto-instalado (como Odoo)
-- 🎯 Setup com um clique
-- 🛠️ Zero configuração manual
-- 📦 Não interfere no sistema operacional
+### ✨ **Configuração Inicial Estilo Odoo**
+- 🎯 Assistente de configuração guiado em 2 etapas
+- 🔧 Configure o banco de dados pela interface web
+- 👤 Crie o usuário administrador facilmente
+- 🛠️ Zero configuração manual de arquivos
+- 📦 Instalação limpa e profissional
 
 ### 🏗️ **Arquitetura Moderna**
 - **Frontend**: Next.js 14 + Tailwind CSS
@@ -34,9 +34,10 @@ Um sistema ERP moderno e completo com instalação automática de PostgreSQL, in
 ### Pré-requisitos
 - 💻 Windows 10+ / macOS / Linux  
 - 🟢 Node.js 18+ ([Download](https://nodejs.org/))
-- 🌐 Conexão com internet (apenas primeira execução)
+- 🐘 PostgreSQL 14+ instalado e rodando
+- 🌐 Conexão com internet (primeira execução)
 
-### 💻 **Instalação Tradicional**
+### 💻 **Instalação**
 
 #### Método 1: Um Clique (Windows)
 ```bash
@@ -47,57 +48,47 @@ INICIAR_COMPLETO.bat
 #### Método 2: Linha de Comando
 ```bash
 # Clone o repositório
-git clone https://github.com/remotenyx/erp-remotenyx.git
+git clone https://github.com/joelsouzaslZ/erp-remotenyx.git
 cd erp-remotenyx
 
 # Instalar dependências
 npm run install-all
 
-# Configurar PostgreSQL automaticamente
-npm run setup
-
 # Iniciar sistema
 npm run dev
 ```
 
-### 🌐 Acessar o Sistema
+### 🎯 **Primeira Configuração (Estilo Odoo)**
+
+1. **Acesse o sistema**: http://localhost:3000
+2. **Você será redirecionado para o assistente de configuração**
+3. **Passo 1 - Configure o Banco de Dados:**
+   - Nome do banco: `erp_remotenyx` (ou outro de sua preferência)
+   - Host: `localhost`
+   - Porta: `5433` (ou porta do seu PostgreSQL)
+   - Usuário: `erp_admin` (será criado automaticamente)
+   - Senha: (defina uma senha segura ou deixe em branco)
+
+4. **Passo 2 - Crie o Administrador:**
+   - Nome da empresa
+   - Nome do administrador
+   - Email de acesso
+   - Senha (mínimo 6 caracteres)
+
+5. **Pronto!** O sistema criará automaticamente:
+   - Banco de dados (se não existir)
+   - Todas as tabelas necessárias
+   - Usuário administrador
+   - Dados de exemplo
+   - Arquivo de configuração (.env)
+
+### 🌐 URLs de Acesso
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000
-- **PostgreSQL**: localhost:5433
-- **Email**: admin@remotenyx.com
-- **Senha**: admin123
+- **Assistente de Setup**: http://localhost:3000/setup (primeira vez)
 
-
-
-## 🤖 GitHub Copilot Integration
-
-Este projeto está **100% otimizado** para GitHub Copilot Agent:
-
-### Configuração do Copilot Agent
-```json
-{
-  "name": "erp-remotenyx-agent",
-  "description": "Specialized agent for ERP Remotenyx development",
-  "capabilities": [
-    "code-generation",
-    "bug-fixing", 
-    "documentation",
-    "testing",
-    "database-optimization"
-  ],
-  "context": {
-    "tech_stack": ["Node.js", "Next.js", "PostgreSQL", "Tailwind"],
-    "patterns": ["REST API", "JWT Auth", "React Hooks", "PostgreSQL Models"],
-    "database_schema": "Odoo-compatible models",
-    "architecture": "Microservices-ready monolith"
-  }
-}
-```
-
-### Copilot Features Habilitadas
-- ✅ **Smart Code Completion** - Contexto ERP especializado
-- ✅ **Automated Testing** - Testes gerados automaticamente
-- ✅ **Bug Detection** - Análise proativa de código
+### 🔐 Login
+Use as credenciais que você definiu no assistente de configuração.
 - ✅ **Documentation** - Docs auto-geradas
 - ✅ **Refactoring** - Sugestões de otimização
 - ✅ **Database Queries** - SQL otimizado para PostgreSQL
