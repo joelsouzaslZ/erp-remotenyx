@@ -11,9 +11,9 @@ class PostgreSQLManager {
     this.logsDir = path.join(this.postgresDir, 'logs');
     this.port = 5433;
     this.host = 'localhost';
-    this.database = 'erp_remotenyx';
-    this.username = 'erp_admin';
-    this.password = 'erp_admin_2025';
+    this.database = 'erpremotenyx';
+    this.username = 'erpadmin';
+    this.password = 'erpadmin2025';
     this.serverProcess = null;
   }
 
@@ -253,7 +253,7 @@ DB_USER=${this.username}
 DB_PASSWORD=${this.password}
 
 # Configuração JWT
-JWT_SECRET=erp_remotenyx_super_secret_key_2025_secure
+JWT_SECRET=erpremotenyx_super_secret_key_2025_secure
 
 # Configuração do Servidor
 NODE_ENV=development

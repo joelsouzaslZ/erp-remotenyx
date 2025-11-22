@@ -10,9 +10,9 @@ export default function Setup() {
   const router = useRouter();
 
   const [dbConfig, setDbConfig] = useState({
-    dbName: 'erp_remotenyx',
-    dbUser: 'erp_admin',
-    dbPassword: 'erp_admin_2025',
+    dbName: 'erpremotenyx',
+    dbUser: 'erpadmin',
+    dbPassword: 'erpadmin2025',
     dbHost: 'localhost',
     dbPort: '5432'
   });
@@ -171,7 +171,7 @@ export default function Setup() {
                     value={dbConfig.dbName}
                     onChange={handleDbChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="erp_remotenyx"
+                    placeholder="erpremotenyx"
                   />
                 </div>
 

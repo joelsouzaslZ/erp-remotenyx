@@ -85,7 +85,7 @@ Na **primeira execução**, você será automaticamente redirecionado para o ass
 
 #### 📋 **Passo 1 - Configure o Banco de Dados** (2 minutos)
 Configure a conexão com seu PostgreSQL:
-- **Nome do banco**: `erp_remotenyx` (será criado automaticamente se não existir)
+- **Nome do banco**: `erpremotenyx` (será criado automaticamente se não existir)
 - **Host**: `localhost`
 - **Porta**: `5432` (porta padrão do PostgreSQL)
 - **Usuário**: seu usuário PostgreSQL (geralmente `postgres`)
@@ -230,7 +230,7 @@ npm run health-check
 # Banco de Dados
 DB_HOST=localhost
 DB_PORT=5433
-DB_NAME=erp_remotenyx
+DB_NAME=erpremotenyx
 DB_USER=erp_admin
 DB_PASSWORD=erp_admin_2025
 

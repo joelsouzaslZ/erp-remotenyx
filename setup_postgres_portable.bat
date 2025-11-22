@@ -19,6 +19,11 @@ if not exist "%TEMP_DIR%" mkdir "%TEMP_DIR%"
 :: Verificar se já existe PostgreSQL instalado
 if exist "%POSTGRES_DIR%\bin\postgres.exe" (
     echo PostgreSQL portátil já existe!
+    :: Se bin existe mas data não, inicializar o data dir
+    if not exist "%DATA_DIR%\postgresql.conf" (
+        echo Diretório de dados não encontrado. Inicializando banco de dados...
+        goto :init_database
+    )
     goto :start_postgres
 )
 
@@ -165,10 +170,10 @@ echo Configurando banco de dados do ERP...
 "%POSTGRES_DIR%\bin\createuser.exe" -h localhost -p 5433 -U postgres --createdb --no-createrole --no-superuser erp_admin 2>nul
 
 :: Criar banco de dados do ERP
-"%POSTGRES_DIR%\bin\createdb.exe" -h localhost -p 5433 -U postgres -O erp_admin erp_remotenyx 2>nul
+"%POSTGRES_DIR%\bin\createdb.exe" -h localhost -p 5433 -U postgres -O erp_admin erpremotenyx 2>nul
 
 :: Configurar senha do usuário
-"%POSTGRES_DIR%\bin\psql.exe" -h localhost -p 5433 -U postgres -d erp_remotenyx -c "ALTER USER erp_admin PASSWORD 'erp_admin_2025';" 2>nul
+"%POSTGRES_DIR%\bin\psql.exe" -h localhost -p 5433 -U postgres -d erpremotenyx -c "ALTER USER erpadmin PASSWORD 'erpadmin2025';" 2>nul
 
 echo.
 echo =========================================
@@ -178,9 +183,9 @@ echo.
 echo Informações de conexão:
 echo Host: localhost
 echo Porta: 5433
-echo Banco: erp_remotenyx
-echo Usuário: erp_admin
-echo Senha: erp_admin_2025
+echo Banco: erpremotenyx
+echo Usuário: erpadmin
+echo Senha: erpadmin2025
 echo.
 echo PostgreSQL está rodando em segundo plano.
 echo Para parar: %POSTGRES_DIR%\bin\pg_ctl.exe -D "%DATA_DIR%" stop
@@ -193,12 +198,12 @@ if not exist "%SCRIPT_DIR%.env" (
         echo # Configuração do Banco de Dados
         echo DB_HOST=localhost
         echo DB_PORT=5433
-        echo DB_NAME=erp_remotenyx
-        echo DB_USER=erp_admin
-        echo DB_PASSWORD=erp_admin_2025
+        echo DB_NAME=erpremotenyx
+        echo DB_USER=erpadmin
+        echo DB_PASSWORD=erpadmin2025
         echo.
         echo # Configuração JWT
-        echo JWT_SECRET=erp_remotenyx_super_secret_key_2025_secure
+        echo JWT_SECRET=erpremotenyx_super_secret_key_2025_secure
         echo.
         echo # Configuração do Servidor
         echo NODE_ENV=development

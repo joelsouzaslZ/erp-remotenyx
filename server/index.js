@@ -6,7 +6,7 @@ require('dotenv').config();
 
 // Definir JWT_SECRET se não existir
 if (!process.env.JWT_SECRET) {
-  process.env.JWT_SECRET = 'erp_remotenyx_secret_key_2025';
+  process.env.JWT_SECRET = 'erpremotenyx_secret_key_2025';
 }
 
 const app = express();
@@ -29,6 +29,15 @@ app.use(limiter);
 // Middleware para parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Capturar JSON inválido e responder com 400 em vez de deixar o processo cair
+app.use((err, req, res, next) => {
+  if (err && err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    console.warn('⚠️  Requisição com JSON inválido recebida');
+    return res.status(400).json({ error: 'JSON inválido no corpo da requisição' });
+  }
+  next(err);
+});
 
 // Rotas da API
 app.use('/api/setup', require('./routes/setup'));
