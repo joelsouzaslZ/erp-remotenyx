@@ -37,28 +37,28 @@ function startSystem() {
     shell: true
   });
 
+  let clientProcess = null;
+
+  // Handle cleanup
+  const cleanup = () => {
+    console.log('\n\n🛑 Shutting down...');
+    serverProcess.kill();
+    if (clientProcess) {
+      clientProcess.kill();
+    }
+    process.exit(0);
+  };
+
+  process.on('SIGINT', cleanup);
+  process.on('SIGTERM', cleanup);
+
   // Give server time to start
   setTimeout(() => {
     console.log('\n🔄 Starting frontend client...');
-    const clientProcess = spawn('npm', ['run', 'client'], {
+    clientProcess = spawn('npm', ['run', 'client'], {
       cwd: __dirname,
       stdio: 'inherit',
       shell: true
-    });
-
-    // Handle cleanup
-    process.on('SIGINT', () => {
-      console.log('\n\n🛑 Shutting down...');
-      serverProcess.kill();
-      clientProcess.kill();
-      process.exit(0);
-    });
-
-    process.on('SIGTERM', () => {
-      console.log('\n\n🛑 Shutting down...');
-      serverProcess.kill();
-      clientProcess.kill();
-      process.exit(0);
     });
   }, 3000);
 

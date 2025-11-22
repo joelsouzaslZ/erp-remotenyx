@@ -132,11 +132,11 @@ router.get('/dashboard', async (req, res) => {
     
     const totalIncome = transactions
       .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
       
     const totalExpense = transactions
       .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
 
     // Transações por categoria
     const categories = {};
@@ -144,7 +144,8 @@ router.get('/dashboard', async (req, res) => {
       if (!categories[t.category]) {
         categories[t.category] = { income: 0, expense: 0 };
       }
-      categories[t.category][t.type] += parseFloat(t.amount);
+      const amount = parseFloat(t.amount) || 0;
+      categories[t.category][t.type] += amount;
     });
 
     const categoryStats = Object.entries(categories).map(([category, amounts]) => ({

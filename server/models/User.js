@@ -20,6 +20,11 @@ class User {
   static async findOne(options) {
     try {
       const { where } = options;
+      
+      if (!where || (!where.email && !where.id)) {
+        throw new Error('Either email or id must be provided');
+      }
+
       let query = 'SELECT * FROM users WHERE ';
       const params = [];
       const conditions = [];
