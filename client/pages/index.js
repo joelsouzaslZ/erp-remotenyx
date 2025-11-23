@@ -19,6 +19,13 @@ export default function Home() {
         router.push('/setup')
         return
       }
+
+      // Se o sistema estiver configurado mas ainda não houver usuário admin, redirecionar para registro
+      if (response.data.needsAdmin) {
+        // redireciona para a tela de registro para criar o primeiro admin
+        router.push('/register?first=true')
+        return
+      }
     } catch (error) {
       console.error('Erro ao verificar status de setup:', error)
     } finally {

@@ -66,7 +66,20 @@ router.post('/register', [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, role = 'employee' } = req.body;
+    const { name, email, password } = req.body;
+
+    // Se não existir nenhum usuário no sistema, permitir criação do primeiro admin
+    let role = req.body.role || 'employee';
+    try {
+      const userCount = await User.count();
+      if (userCount === 0) {
+        // Forçar role 'admin' para o primeiro usuário
+        role = 'admin';
+      }
+    } catch (err) {
+      console.error('Erro ao contar usuários (registro):', err.message);
+      // Se não for possível contar usuários, continuamos com role padrão (não bloquear)
+    }
 
     // Verificar se email já existe
     const existingUser = await User.findOne({ where: { email } });

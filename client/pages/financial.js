@@ -43,7 +43,8 @@ export default function Financial() {
   const fetchTransactions = async () => {
     try {
       const response = await api.get('/financial/transactions');
-      setTransactions(response.data);
+      // API retorna { transactions: [...], total, ... }
+      setTransactions(response.data && response.data.transactions ? response.data.transactions : []);
     } catch (error) {
       console.error('Erro ao buscar transações:', error);
     } finally {
@@ -88,9 +89,9 @@ export default function Financial() {
     setEditingTransaction(transaction);
     setFormData({
       type: transaction.type,
-      amount: transaction.amount.toString(),
-      description: transaction.description,
-      category: transaction.category
+      amount: (transaction.amount !== undefined && transaction.amount !== null) ? transaction.amount.toString() : '',
+      description: transaction.description || '',
+      category: transaction.category || ''
     });
     setShowModal(true);
   };
@@ -229,12 +230,12 @@ export default function Financial() {
                     <div className={`text-sm font-medium ${
                       transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      {transaction.type === 'income' ? '+' : '-'}R$ {transaction.amount.toLocaleString('pt-BR')}
+                      {transaction.type === 'income' ? '+' : '-'}R$ {Number(transaction.amount || 0).toLocaleString('pt-BR')}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-500">
-                      {new Date(transaction.createdAt).toLocaleDateString('pt-BR')}
+                      {new Date(transaction.createdAt || transaction.created_at).toLocaleDateString('pt-BR')}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

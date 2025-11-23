@@ -127,7 +127,14 @@ if not exist "%DATA_DIR%\postgresql.conf" (
 )
 
 :start_postgres
-:: Verificar se PostgreSQL já está rodando
+:: Verificar se PostgreSQL já está rodando para este data dir
+"%POSTGRES_DIR%\bin\pg_ctl.exe" -D "%DATA_DIR%" status >nul 2>&1
+if not errorlevel 1 (
+    echo PostgreSQL já está rodando para este data dir!
+    goto :setup_database
+)
+
+:: Verificar se alguma instância está escutando na porta 5433 (legacy)
 netstat -an | findstr ":5433" >nul 2>&1
 if not errorlevel 1 (
     echo PostgreSQL já está rodando na porta 5433!

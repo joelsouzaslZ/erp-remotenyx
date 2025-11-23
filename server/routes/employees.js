@@ -47,12 +47,53 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Estatísticas de funcionários
+router.get('/stats/overview', async (req, res) => {
+  try {
+    const employees = await Employee.findAll();
+    const departments = await Department.findAll();
+    const totalEmployees = employees.length;
+    const totalDepartments = departments.length;
+    
+    // Contar funcionários por departamento
+    const employeesByDept = departments.map(dept => ({
+      department_name: dept.name,
+      count: employees.filter(emp => emp.department_id == dept.id).length
+    }));
+
+    res.json({
+      total_employees: totalEmployees,
+      total_departments: totalDepartments,
+      employees_by_department: employeesByDept
+    });
+  } catch (error) {
+    console.error('Erro ao buscar estatísticas:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Listar departamentos
+router.get('/departments/list', async (req, res) => {
+  try {
+    const departments = await Department.findAll();
+    res.json(departments);
+  } catch (error) {
+    console.error('Erro ao listar departamentos:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 // Buscar funcionário por ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    
-    const employee = await Employee.findByPk(id);
+    // Validar que o id é numérico para evitar conflitos com rotas como /departments
+    const idNum = parseInt(id, 10);
+    if (isNaN(idNum)) {
+      return res.status(400).json({ error: 'ID inválido. Use um número.' });
+    }
+
+    const employee = await Employee.findByPk(idNum);
     if (!employee) {
       return res.status(404).json({ error: 'Funcionário não encontrado' });
     }
@@ -110,10 +151,22 @@ router.post('/', async (req, res) => {
 });
 
 // Atualizar funcionário
+// Atualizar funcionário
 router.put('/:id', async (req, res) => {
   try {
-    // TODO: Implement update functionality
-    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
+    const { id } = req.params;
+    const idNum = parseInt(id, 10);
+    if (isNaN(idNum)) return res.status(400).json({ error: 'ID inválido. Use um número.' });
+
+    const { name, email, phone, position, department_id, salary, hire_date, work_location, contract_type } = req.body;
+
+    const updated = await Employee.update(idNum, { name, email, phone, position, department_id, salary, hire_date, work_location, contract_type });
+    if (!updated) return res.status(404).json({ error: 'Funcionário não encontrado' });
+
+    const departments = await Department.findAll();
+    const department = departments.find(d => d.id == updated.department_id);
+    const employeeWithDept = { ...updated, department };
+    res.json(employeeWithDept);
   } catch (error) {
     console.error('Erro ao atualizar funcionário:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
@@ -121,10 +174,16 @@ router.put('/:id', async (req, res) => {
 });
 
 // Deletar funcionário
+// Deletar funcionário (soft delete)
 router.delete('/:id', async (req, res) => {
   try {
-    // TODO: Implement delete functionality
-    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
+    const { id } = req.params;
+    const idNum = parseInt(id, 10);
+    if (isNaN(idNum)) return res.status(400).json({ error: 'ID inválido. Use um número.' });
+
+    const deleted = await Employee.softDelete(idNum);
+    if (!deleted) return res.status(404).json({ error: 'Funcionário não encontrado' });
+    res.json({ message: 'Funcionário removido com sucesso' });
   } catch (error) {
     console.error('Erro ao deletar funcionário:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });

@@ -15,10 +15,28 @@ const isSystemConfigured = () => {
 // GET /api/setup/status - Verificar se o sistema precisa de configuração
 router.get('/status', (req, res) => {
   const configured = isSystemConfigured();
-  res.json({ 
-    configured,
-    message: configured ? 'Sistema já configurado' : 'Sistema necessita configuração inicial'
-  });
+  // Se não estiver configurado, retornar imediatamente
+  if (!configured) {
+    return res.json({ 
+      configured: false,
+      needsAdmin: true, // if no .env exists, assume initial setup required
+      message: 'Sistema necessita configuração inicial'
+    });
+  }
+
+  // Se estiver configurado, tentar checar se já existe ao menos um usuário
+  (async () => {
+    try {
+      const { User } = require('../models');
+      const userCount = await User.count();
+      const needsAdmin = userCount === 0;
+      return res.json({ configured: true, needsAdmin, message: 'Sistema configurado' });
+    } catch (err) {
+      console.error('Erro ao checar usuários para setup status:', err.message);
+      // Em caso de erro (ex: DB inacessível), assumir que não precisa de admin via este endpoint
+      return res.json({ configured: true, needsAdmin: false, message: 'Sistema configurado' });
+    }
+  })();
 });
 
 // POST /api/setup/validate-db - Validar conexão com o banco de dados

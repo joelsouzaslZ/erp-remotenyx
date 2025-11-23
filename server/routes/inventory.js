@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { Product, Transaction } = require('../models');
+const models = require('../models');
+const { Product, Transaction } = models;
+
+// Debug: inspecionar o objeto `models` e `Product` em tempo de execução
+try {
+  console.log('DEBUG inventory models keys:', Object.keys(models));
+  console.log('DEBUG Product keys:', Product ? Object.keys(Product) : 'Product is undefined');
+  console.log('DEBUG Product.findById type:', Product && typeof Product.findById);
+} catch (e) {
+  console.error('DEBUG error inspecting models:', e);
+}
 
 // Listar todos os produtos
 router.get('/products', async (req, res) => {
@@ -16,17 +26,19 @@ router.get('/products', async (req, res) => {
 // Criar novo produto
 router.post('/products', async (req, res) => {
   try {
-    const { name, description, price, quantity, category, cost, min_quantity } = req.body;
-    
+    const { name, description, price, quantity, category, cost, min_quantity, sku } = req.body;
+
     const product = await Product.create({
       name,
       category,
       price,
       cost,
       quantity,
-      min_quantity
+      min_quantity,
+      description,
+      sku
     });
-    
+
     res.status(201).json(product);
   } catch (error) {
     console.error('Erro ao criar produto:', error);
@@ -37,8 +49,14 @@ router.post('/products', async (req, res) => {
 // Atualizar produto
 router.put('/products/:id', async (req, res) => {
   try {
-    // TODO: Implement update functionality
-    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
+    const { id } = req.params;
+    const idNum = parseInt(id, 10);
+    if (isNaN(idNum)) return res.status(400).json({ error: 'ID inválido' });
+
+    const { name, description, price, quantity, category, cost, min_quantity, sku } = req.body;
+    const updated = await Product.update(idNum, { name, category, price, cost, quantity, min_quantity, description, sku });
+    if (!updated) return res.status(404).json({ error: 'Produto não encontrado' });
+    res.json(updated);
   } catch (error) {
     console.error('Erro ao atualizar produto:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
@@ -48,8 +66,13 @@ router.put('/products/:id', async (req, res) => {
 // Deletar produto
 router.delete('/products/:id', async (req, res) => {
   try {
-    // TODO: Implement delete functionality
-    res.status(501).json({ error: 'Funcionalidade em desenvolvimento' });
+    const { id } = req.params;
+    const idNum = parseInt(id, 10);
+    if (isNaN(idNum)) return res.status(400).json({ error: 'ID inválido' });
+
+    const deleted = await Product.delete(idNum);
+    if (!deleted) return res.status(404).json({ error: 'Produto não encontrado' });
+    res.json({ message: 'Produto removido com sucesso' });
   } catch (error) {
     console.error('Erro ao deletar produto:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
@@ -72,36 +95,40 @@ router.get('/products/low-stock', async (req, res) => {
 });
 
 // Movimentações de estoque (entradas e saídas)
-router.post('/movements', (req, res) => {
+router.post('/movements', async (req, res) => {
   try {
     const { productId, type, quantity, description } = req.body;
-    
-    const product = Product.findById(productId);
+    const qty = parseInt(quantity);
+    if (!productId || !type || !qty) return res.status(400).json({ error: 'Dados inválidos' });
+
+    const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: 'Produto não encontrado' });
     }
-    
+
     // Atualizar quantidade do produto
-    let newQuantity = product.quantity;
+    let newQuantity = product.quantity || 0;
     if (type === 'entrada') {
-      newQuantity += parseInt(quantity);
+      newQuantity += qty;
     } else if (type === 'saida') {
-      if (product.quantity < parseInt(quantity)) {
+      if (newQuantity < qty) {
         return res.status(400).json({ error: 'Quantidade insuficiente em estoque' });
       }
-      newQuantity -= parseInt(quantity);
+      newQuantity -= qty;
+    } else {
+      return res.status(400).json({ error: 'Tipo de movimentação inválido' });
     }
-    
-    const updatedProduct = Product.update(productId, { ...product, quantity: newQuantity });
-    
+
+    const updatedProduct = await Product.update(productId, { quantity: newQuantity });
+
     // Registrar a movimentação como transação
-    const transaction = Transaction.create({
+    const transaction = await Transaction.create({
       type: type === 'entrada' ? 'income' : 'expense',
-      amount: product.price * quantity,
-      description: `${description} - ${product.name}`,
+      amount: (product.price || 0) * qty,
+      description: `${description || ''} - ${product.name}`,
       category: 'Estoque'
     });
-    
+
     res.status(201).json({
       message: 'Movimentação registrada com sucesso',
       product: updatedProduct,

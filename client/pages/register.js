@@ -30,6 +30,11 @@ export default function Register() {
 
   const checkRegistrationAllowed = async () => {
     try {
+      // Se for a primeira criação (query param `first=true`), permitir registro
+      if (router.query.first === 'true') {
+        setRegistrationAllowed(true);
+        return;
+      }
       const response = await api.get('/auth/registration-allowed');
       setRegistrationAllowed(response.data.allowed);
       if (!response.data.allowed) {
@@ -65,7 +70,8 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register(formData.name, formData.email, formData.password);
+      const roleToUse = router.query.first === 'true' ? 'admin' : 'employee';
+      await register({ name: formData.name, email: formData.email, password: formData.password, role: roleToUse });
       router.push('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Erro ao criar conta');

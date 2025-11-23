@@ -98,9 +98,9 @@ router.delete('/leads/:id', async (req, res) => {
 });
 
 // Estatísticas do CRM
-router.get('/stats', (req, res) => {
+router.get('/stats', async (req, res) => {
   try {
-    const stats = Lead.getStats();
+    const stats = await Lead.getStats();
     res.json(stats);
   } catch (error) {
     console.error('Erro ao buscar estatísticas do CRM:', error);
@@ -109,15 +109,16 @@ router.get('/stats', (req, res) => {
 });
 
 // Pipeline de vendas por estágio
-router.get('/pipeline', (req, res) => {
+router.get('/pipeline', async (req, res) => {
   try {
     const stages = Lead.stages;
-    const pipeline = stages.map(stage => ({
-      ...stage,
-      leads: Lead.findByStage(stage.id),
-      count: Lead.findByStage(stage.id).length,
-      totalValue: Lead.findByStage(stage.id).reduce((sum, lead) => sum + lead.expectedRevenue, 0)
-    }));
+    const pipeline = [];
+    for (const stage of stages) {
+      const leads = await Lead.findByStage(stage.id);
+      const count = leads.length;
+      const totalValue = leads.reduce((sum, lead) => sum + (parseFloat(lead.expectedRevenue) || 0), 0);
+      pipeline.push({ ...stage, leads, count, totalValue });
+    }
 
     res.json(pipeline);
   } catch (error) {
@@ -127,28 +128,29 @@ router.get('/pipeline', (req, res) => {
 });
 
 // Leads por usuário
-router.get('/leads-by-user', (req, res) => {
+router.get('/leads-by-user', async (req, res) => {
   try {
-    const leads = Lead.findAll();
+    const leads = await Lead.findAll();
     const leadsByUser = {};
     
     leads.forEach(lead => {
-      if (!leadsByUser[lead.userId]) {
-        leadsByUser[lead.userId] = {
-          userId: lead.userId,
+      const uid = lead.userId || 'unassigned';
+      if (!leadsByUser[uid]) {
+        leadsByUser[uid] = {
+          userId: uid,
           count: 0,
           totalValue: 0,
           stages: {}
         };
       }
       
-      leadsByUser[lead.userId].count++;
-      leadsByUser[lead.userId].totalValue += lead.expectedRevenue;
+      leadsByUser[uid].count++;
+      leadsByUser[uid].totalValue += (parseFloat(lead.expectedRevenue) || 0);
       
-      if (!leadsByUser[lead.userId].stages[lead.stage]) {
-        leadsByUser[lead.userId].stages[lead.stage] = 0;
+      if (!leadsByUser[uid].stages[lead.stage]) {
+        leadsByUser[uid].stages[lead.stage] = 0;
       }
-      leadsByUser[lead.userId].stages[lead.stage]++;
+      leadsByUser[uid].stages[lead.stage]++;
     });
 
     res.json(Object.values(leadsByUser));

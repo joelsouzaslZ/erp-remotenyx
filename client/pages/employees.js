@@ -39,7 +39,8 @@ export default function Employees() {
   const fetchEmployees = async () => {
     try {
       const response = await api.get('/employees');
-      setEmployees(response.data);
+      // A API retorna { employees: [...], total, page, totalPages }
+      setEmployees(response.data && response.data.employees ? response.data.employees : []);
     } catch (error) {
       console.error('Erro ao buscar funcionários:', error);
     } finally {
@@ -49,8 +50,9 @@ export default function Employees() {
 
   const fetchDepartments = async () => {
     try {
-      const response = await api.get('/employees/departments');
-      setDepartments(response.data);
+      // rota no backend é /employees/departments/list
+      const response = await api.get('/employees/departments/list');
+      setDepartments(response.data || []);
     } catch (error) {
       console.error('Erro ao buscar departamentos:', error);
     }
@@ -59,10 +61,18 @@ export default function Employees() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        position: formData.position,
+        department_id: formData.department ? parseInt(formData.department, 10) : null,
+        salary: formData.salary ? parseFloat(formData.salary) : null,
+      };
+
       if (editingEmployee) {
-        await api.put(`/employees/${editingEmployee.id}`, formData);
+        await api.put(`/employees/${editingEmployee.id}`, payload);
       } else {
-        await api.post('/employees', formData);
+        await api.post('/employees', payload);
       }
       setShowModal(false);
       setEditingEmployee(null);
@@ -78,9 +88,10 @@ export default function Employees() {
     setFormData({
       name: employee.name,
       email: employee.email,
-      department: employee.department,
+      // employee.department may be an object {id, name} or a string
+      department: employee.department ? (employee.department.id || employee.department) : '',
       position: employee.position,
-      salary: employee.salary.toString()
+      salary: (employee.salary !== undefined && employee.salary !== null) ? employee.salary.toString() : ''
     });
     setShowModal(true);
   };
@@ -96,11 +107,15 @@ export default function Employees() {
     }
   };
 
-  const filteredEmployees = employees.filter(emp =>
-    emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    emp.department.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredEmployees = Array.isArray(employees) ? employees.filter(emp => {
+    const term = searchTerm.toLowerCase();
+    const name = (emp.name || '').toString().toLowerCase();
+    const email = (emp.email || '').toString().toLowerCase();
+    // department can be a string or an object { id, name }
+    const dept = emp.department ? (typeof emp.department === 'string' ? emp.department : (emp.department.name || '')) : '';
+    const department = dept.toString().toLowerCase();
+    return name.includes(term) || email.includes(term) || department.includes(term);
+  }) : [];
 
   if (loading) {
     return (
@@ -177,13 +192,13 @@ export default function Employees() {
                     <div className="text-sm text-gray-500">{employee.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{employee.department}</div>
+                    <div className="text-sm text-gray-900">{(employee.department && (employee.department.name || employee.department)) || ''}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{employee.position}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">R$ {employee.salary.toLocaleString('pt-BR')}</div>
+                    <div className="text-sm text-gray-900">R$ {Number(employee.salary || 0).toLocaleString('pt-BR')}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
@@ -238,11 +253,9 @@ export default function Employees() {
                   required
                 >
                   <option value="">Selecione o departamento</option>
-                  <option value="TI">TI</option>
-                  <option value="RH">RH</option>
-                  <option value="Vendas">Vendas</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Financeiro">Financeiro</option>
+                  {Array.isArray(departments) && departments.map(d => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
                 </select>
                 <input
                   type="text"

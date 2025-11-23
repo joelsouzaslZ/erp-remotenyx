@@ -63,9 +63,22 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const register = async (userData) => {
+  const register = async (userDataOrName, emailArg, passwordArg, roleArg) => {
     try {
-      const response = await api.post('/auth/register', userData)
+      let payload
+      // Suportar duas assinaturas: register({name,email,password,role}) ou register(name,email,password,role)
+      if (typeof userDataOrName === 'string') {
+        payload = {
+          name: userDataOrName,
+          email: emailArg,
+          password: passwordArg,
+          role: roleArg
+        }
+      } else {
+        payload = userDataOrName
+      }
+
+      const response = await api.post('/auth/register', payload)
       const { token, user } = response.data
 
       Cookies.set('token', token, { expires: 1 })

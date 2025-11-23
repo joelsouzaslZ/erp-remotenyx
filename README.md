@@ -117,6 +117,18 @@ Após completar o assistente, o sistema irá:
 - **Assistente de Setup**: http://localhost:3000/setup (primeira vez)
 - **API Health Check**: http://localhost:5000/api/health
 
+### 📌 Observação sobre PostgreSQL portátil
+- O projeto inclui um PostgreSQL portátil em `postgresql/` que pode ser inicializado via `setup_postgres_portable.bat`.
+- Durante a configuração automática, o script pode temporariamente ajustar `pg_hba.conf` para `trust` localmente para permitir a criação do usuário e banco (apenas para setup).
+- Por segurança, após confirmar que o banco está funcionando, recomenda-se restaurar `pg_hba.conf` para `md5` ou `scram-sha-256` e recarregar o servidor:
+
+```powershell
+cd "c:\Users\joel.souza\Downloads\NEW\erp-remotenyx\postgresql"
+.\bin\pg_ctl.exe -D data reload
+```
+
+Veja `POSTGRES_SETUP.md` para instruções detalhadas.
+
 ### 🔐 Login
 Use as credenciais que você definiu no assistente de configuração.
 - ✅ **Documentation** - Docs auto-geradas
